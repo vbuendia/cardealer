@@ -19,13 +19,25 @@ class CarMake(models.Model):
                "Description: " + self.description
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
-class CarDealer(models.Model):
-    name = models.CharField(null=False, max_length=30, default='Car Dealer')
-    description = models.CharField(max_length=1000)
-    
+class CarDealer:
+    def __init__(self, address, city, id, lat, long, st, zip):
+        # Dealer address
+        self.address = address
+        # Dealer city
+        self.city = city
+        # Dealer id
+        self.id = id
+        # Location lat
+        self.lat = lat
+        # Location long
+        self.long = long
+        # Dealer state
+        self.st = st
+        # Dealer zip
+        self.zip = zip
+
     def __str__(self):
-        return "Name: " + self.name + "," + \
-               "Description: " + self.description
+        return "Dealer: " + self.address
 
 # <HINT> Create a plain Python class `DealerReview` to hold review data
 class DealerReview(models.Model):
