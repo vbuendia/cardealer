@@ -12,13 +12,13 @@ def get_request(url, **kwargs):
     print("GET from {} ".format(url))
     try:
         # Call get method of requests library with URL and parameters
-        #if api_key:
+        if kwargs["api_key"]:
         # Basic authentication GET
-        #  response = requests.get(url, headers={'Content-Type': 'application/json'},
-        #                            params=kwargs, auth=HTTPBasicAuth('apikey', api_key))
-        #else:
-         # no authentication GET
-        response = requests.get(url, headers={'Content-Type': 'application/json'},
+          response = requests.get(url, headers={'Content-Type': 'application/json'},
+                                     params=kwargs, auth=HTTPBasicAuth('apikey', kwargs["api_key"]))
+        else:
+          # no authentication GET
+          response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
     except:
         # If any error occurs
@@ -35,10 +35,10 @@ def post_request(url, json_payload, **kwargs):
     print("POST to {} ".format(url))
     try:
         # Call get method of requests library with URL and parameters
-        if api_key:
+        if kwargs["api_key"]:
          # Basic authentication GET
           response = requests.post(url, headers={'Content-Type': 'application/json'},
-                                    params=kwargs, auth=HTTPBasicAuth('apikey', api_key), data=json.dumps(payload))
+                                    params=kwargs, auth=HTTPBasicAuth('apikey', kwargs["api_key"]), data=json.dumps(payload))
         else:
          # no authentication GET
           response = requests.post(url, headers={'Content-Type': 'application/json'},
@@ -146,7 +146,7 @@ def get_dealer_reviews_from_cf(url, dealer_id):
               car_make=review["car_make"],
               car_model=review["car_model"],
               car_year=review["car_year"],
-              sentiment="-",
+              sentiment=analyze_review_sentiments(review["review"]),
               id=review["id"],
               dealership=review["dealership"])
             results.append(review_obj)
@@ -157,6 +157,9 @@ def get_dealer_reviews_from_cf(url, dealer_id):
 # def analyze_review_sentiments(text):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
+def analyze_review_sentiments(text):
 
+   json_result = get_request(url,dealerId = dealerId)
 
+   return ("positive")
 
