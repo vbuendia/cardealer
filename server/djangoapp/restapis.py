@@ -1,6 +1,6 @@
 import requests
 import json
-from .models import CarDealer
+from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 
 
@@ -12,13 +12,13 @@ def get_request(url, **kwargs):
     print("GET from {} ".format(url))
     try:
         # Call get method of requests library with URL and parameters
-        if api_key:
-         # Basic authentication GET
-          response = requests.get(url, headers={'Content-Type': 'application/json'},
-                                    params=kwargs, auth=HTTPBasicAuth('apikey', api_key))
-        else:
+        #if api_key:
+        # Basic authentication GET
+        #  response = requests.get(url, headers={'Content-Type': 'application/json'},
+        #                            params=kwargs, auth=HTTPBasicAuth('apikey', api_key))
+        #else:
          # no authentication GET
-          response = requests.get(url, headers={'Content-Type': 'application/json'},
+        response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
     except:
         # If any error occurs
@@ -71,7 +71,7 @@ def get_dealers_from_cf(url, **kwargs):
             dealer_doc = dealer #["doc"]
             # Create a CarDealer object with values in `doc` object
             dealer_obj = CarDealer(address=dealer_doc["address"], city=dealer_doc["city"], id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"],
-                                   st=dealer_doc["st"], zip=dealer_doc["zip"])
+                                   st=dealer_doc["st"], zip=dealer_doc["zip"], short_name=dealer_doc["short_name"],full_name=dealer_doc["full_name"])
             results.append(dealer_obj)
 
     return results
@@ -93,8 +93,8 @@ def get_dealer_by_dealerid(url, dealerId):
             # Create a CarDealer object with values in `doc` object
             if dealer_doc["id"]==dealerId:
                 dealer_obj = CarDealer(address=dealer_doc["address"], city=dealer_doc["city"], id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"],
-                                   st=dealer_doc["st"], zip=dealer_doc["zip"])
-                results.append(dealer_obj)
+                                   st=dealer_doc["st"], zip=dealer_doc["zip"], short_name=dealer_doc["short_name"],full_name=dealer_doc["full_name"])
+                return (dealer_obj)
     else:
         return "No dealer"
     return results
@@ -105,7 +105,7 @@ def get_dealer_by_state(url, stat):
     json_result = get_request(url,state = stat)
     if json_result:
         # Get the row list in JSON as dealers
-        print(json_result)
+        
         dealers = json_result["docs"]
         # For each dealer object
         for dealer in dealers:
@@ -113,7 +113,7 @@ def get_dealer_by_state(url, stat):
             dealer_doc = dealer #["doc"]
             # Create a CarDealer object with values in `doc` object
             dealer_obj = CarDealer(address=dealer_doc["address"], city=dealer_doc["city"], id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"],
-                                   st=dealer_doc["st"], zip=dealer_doc["zip"])
+                                   st=dealer_doc["st"], zip=dealer_doc["zip"], short_name=dealer_doc["short_name"], full_name = dealer_doc["full_name"])
             results.append(dealer_obj)
 
     return results
@@ -127,17 +127,18 @@ def get_dealer_reviews_from_cf(url, dealer_id):
     results = []
     # Call get_request with a URL parameter
     json_result = get_request(url,dealerId=dealer_id)
-    return (json_result)
+    
     if json_result:
         # Get the row list in JSON as dealers
    
-        reviews = json_result["docs"]
+        reviews = json_result["body"]["data"]["docs"]
+        
         # For each dealer object
         for review in reviews:
             # Get its content in `doc` object
             
             # Create a CarDealer object with values in `doc` object
-            review_obj = DealerReview( dealership=review["dealership"],
+            review_obj = DealerReview(               
               name=review["name"],
               purchase=review["purchase"],
               review=review["review"],
@@ -145,8 +146,9 @@ def get_dealer_reviews_from_cf(url, dealer_id):
               car_make=review["car_make"],
               car_model=review["car_model"],
               car_year=review["car_year"],
-              sentiment=review["sentiment"],
-              id=review["id"])
+              sentiment="-",
+              id=review["id"],
+              dealership=review["dealership"])
             results.append(review_obj)
 
     return results

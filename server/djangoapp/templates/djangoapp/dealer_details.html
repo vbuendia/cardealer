@@ -1,18 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dealership Review</title>
-    {% load static %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
 
+    {% include 'djangoapp/headers.html' %}
     <body>
-
+    <!-- Remove this line the first time you edit this file -->
+   
     <!--Add a nav bar here -->
+    {% include 'djangoapp/bar_nav.html' %}
 
+    {% if user.is_authenticated %}
+      -> add_review en nav_bar
+    {% endif%}  
+
+
+    Reviews for {{ dealer.full_name }}
     <!-- Add reviews as cards -->
-
+    <div class="card-columns">
+        {% for revi in reviews %}
+        <div class="card"> -
+        {{ revi }}
+        </div>
+        {% endfor%}
+    </div>
     </body>
 
 </html>
