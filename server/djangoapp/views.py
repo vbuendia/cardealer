@@ -109,13 +109,27 @@ def get_dealer_details(request, dealer_id):
         
         url = "https://be43dd7c.eu-gb.apigw.appdomain.cloud/api/review"
         reviews = get_dealer_reviews_from_cf(url, dealer_id)
+        
         context["reviews"]=reviews
-
-        dealer_reviews = ' '.join([revi.review for revi in reviews])
        
-        return HttpResponse(dealer_reviews)
+        #dealer_reviews = ' '.join([revi.review for revi in reviews])
+       
+        return HttpResponse(reviews)
 
 # Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
-# ...
+def add_review(request, dealer_id):
+#check if user authenticated
+      user = request.user
 
+      url = "https://be43dd7c.eu-gb.apigw.appdomain.cloud/api/review"
+
+      if user:
+          review = {}
+          for key in request.POST:
+              review[key] = request.POST[key]
+          review["time"] = datetime.utcnow().isoformat()
+          json_payload = {}
+          json_payload["review"]=review
+          return (post_request(url, json_payload, dealerId=dealer_id))
+      else:
+          return (0)   

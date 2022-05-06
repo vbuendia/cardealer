@@ -8,11 +8,17 @@ from requests.auth import HTTPBasicAuth
 # e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
 #                                     auth=HTTPBasicAuth('apikey', api_key))
 def get_request(url, **kwargs):
-    print(kwargs)
+   
     print("GET from {} ".format(url))
     try:
         # Call get method of requests library with URL and parameters
-        response = requests.get(url, headers={'Content-Type': 'application/json'},
+        if api_key:
+         # Basic authentication GET
+          response = requests.get(url, headers={'Content-Type': 'application/json'},
+                                    params=kwargs, auth=HTTPBasicAuth('apikey', api_key))
+        else:
+         # no authentication GET
+          response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
     except:
         # If any error occurs
@@ -24,6 +30,26 @@ def get_request(url, **kwargs):
 
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
+def post_request(url, json_payload, **kwargs):
+
+    print("POST to {} ".format(url))
+    try:
+        # Call get method of requests library with URL and parameters
+        if api_key:
+         # Basic authentication GET
+          response = requests.post(url, headers={'Content-Type': 'application/json'},
+                                    params=kwargs, auth=HTTPBasicAuth('apikey', api_key), data=json.dumps(payload))
+        else:
+         # no authentication GET
+          response = requests.post(url, headers={'Content-Type': 'application/json'},
+                                    params=kwargs, data=json.dumps(payload))
+    except:
+        # If any error occurs
+        print("Network exception occurred")
+    status_code = response.status_code
+    print("With status {} ".format(status_code))
+    json_data = json.loads(response.text)
+    return json_data
 
 
 # Create a get_dealers_from_cf method to get dealers from a cloud function
@@ -37,7 +63,7 @@ def get_dealers_from_cf(url, **kwargs):
     json_result = get_request(url)
     if json_result:
         # Get the row list in JSON as dealers
-        print(json_result)
+     
         dealers = json_result["docs"]
         # For each dealer object
         for dealer in dealers:
@@ -104,7 +130,7 @@ def get_dealer_reviews_from_cf(url, dealer_id):
     return (json_result)
     if json_result:
         # Get the row list in JSON as dealers
-        print(json_result)
+   
         reviews = json_result["docs"]
         # For each dealer object
         for review in reviews:
