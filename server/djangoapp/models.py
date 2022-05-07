@@ -56,7 +56,8 @@ class DealerReview:
         self.id=id
 
     def __str__(self):
-        return "Dealer: " + self.name
+        return "Dealer: " + self.name + \
+            " sentiment: " + self.sentiment
 
 
 # <HINT> Create a Car Model model `class CarModel(models.Model):`:

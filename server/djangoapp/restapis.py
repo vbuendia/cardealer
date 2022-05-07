@@ -14,11 +14,11 @@ def get_request(url, **kwargs):
     print("GET from {} ".format(url))
     try:
         # Call get method of requests library with URL and parameters
-        if kwargs["api_key"]:
+        #if kwargs["api_key"]:
         # Basic authentication GET
-          response = requests.get(url, headers={'Content-Type': 'application/json'},
-                                     params=kwargs, auth=HTTPBasicAuth('apikey', kwargs["api_key"]))
-        else:
+        #  response = requests.get(url, headers={'Content-Type': 'application/json'},
+        #                             params=kwargs, auth=HTTPBasicAuth('apikey', kwargs["api_key"]))
+        #else:
           # no authentication GET
           response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
@@ -37,14 +37,14 @@ def post_request(url, json_payload, **kwargs):
     print("POST to {} ".format(url))
     try:
         # Call get method of requests library with URL and parameters
-        if kwargs["api_key"]:
+        #if kwargs["api_key"]:
          # Basic authentication GET
+        #  response = requests.post(url, headers={'Content-Type': 'application/json'},
+        #                            params=kwargs, auth=HTTPBasicAuth('apikey', kwargs["api_key"]), data=json.dumps(json_payload))
+        #else:
+         # no authentication POST
           response = requests.post(url, headers={'Content-Type': 'application/json'},
-                                    params=kwargs, auth=HTTPBasicAuth('apikey', kwargs["api_key"]), data=json.dumps(payload))
-        else:
-         # no authentication GET
-          response = requests.post(url, headers={'Content-Type': 'application/json'},
-                                    params=kwargs, data=json.dumps(payload))
+                                    params=kwargs, data=json.dumps(json_payload))
     except:
         # If any error occurs
         print("Network exception occurred")
@@ -163,12 +163,13 @@ def analyze_review_sentiments(texto):
 
    apikey = 'rg6Pp19-6x_1Rq1vPyXCK9v9VyvZnKsypHE8IfxrhQ_S'
    url = 'https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/9ea34d67-ddf9-4511-ad85-76cff823b461'
-   
+   texto_add = " hello hello hello"
+
    authenticator = IAMAuthenticator(apikey) 
    natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01',authenticator=authenticator) 
 
    natural_language_understanding.set_service_url(url) 
-   response = natural_language_understanding.analyze( text=texto,features=Features(sentiment=SentimentOptions(targets=[texto]))).get_result() 
+   response = natural_language_understanding.analyze( text=texto+texto_add,features=Features(sentiment=SentimentOptions(targets=[texto+texto_add]))).get_result() 
 
    label=json.dumps(response, indent=2) 
 
