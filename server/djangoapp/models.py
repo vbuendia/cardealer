@@ -69,7 +69,7 @@ class DealerReview:
 # - Any other fields you would like to include in car model
 # - __str__ method to print a car make object
 class CarModel(models.Model):
-     car_makes = models.ManyToManyField(CarMake)
+     make = models.ForeignKey(CarMake, null=False, on_delete=models.CASCADE)  
      dealer_id = models.IntegerField(default=0)
      name = models.CharField(max_length=200, default="Car Model Name")
      SEDAN = 'Sedan'
