@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
-# from .models import related models
+from .models import CarModel
 from .restapis import get_dealers_from_cf, get_dealer_by_dealerid, get_dealer_reviews_from_cf,post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -121,16 +121,29 @@ def get_dealer_details(request, dealer_id):
 def add_review(request, dealer_id):
 #check if user authenticated
       user = request.user
-
-      url = "https://be43dd7c.eu-gb.apigw.appdomain.cloud/api/review"
-
+      context = {}
+      url = "https://be43dd7c.eu-gb.apigw.appdomain.cloud/api/dealership"
+      dealer = get_dealer_by_dealerid(url,dealer_id)
+      context["dealer"]=dealer
+      
       if user:
+        if request.method == "GET":
+         
+
+          cars=CarModel.objects.all
+          context["cars"]=cars
+         
+          return render(request, 'djangoapp/add_review.html', context)
+        else:
+          url = "https://be43dd7c.eu-gb.apigw.appdomain.cloud/api/review"
+
           review = {}
           for key in request.POST:
               review[key] = request.POST[key]
           review["time"] = datetime.utcnow().isoformat()
           json_payload = {}
           json_payload["review"]=review
-          return (post_request(url, json_payload, dealerId=dealer_id))
+          post_request(url, json_payload, dealerId=dealer_id)
+          redirect("djangoapp:dealer_details", dealer_id=dealer_id)
       else:
           return (0)   

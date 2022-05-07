@@ -1,16 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    {% load static %}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
 
-</head>
+    {% include 'djangoapp/headers.html' %}
     <body>
+    <!-- Remove this line the first time you edit this file -->
+   
+    <!--Add a nav bar here -->
+    {% include 'djangoapp/bar_nav.html' %}
+    
+    <h2>Add a review about {{dealer.full_name}}</h2>
     <!--Add review form here -->
+    
+    <form action="{% url 'djangoapp:add_review' dealer.id %}" method="post">
+            <div class="form-group">
+                  <div>
+                      <label for="content"><b>Enter the review content: </b></label>
+                      <textarea class="form-control" id="content" name="content" rows="2" required></textarea>
+                  </div>
+                  <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="purchasecheck" id="purchasecheck">
+                      <label class="form-check-label" for="purchasecheck">
+                          Has purchased the car from {{dealer.full_name}}? (select purchased car information below if checked)
+                      </label>
+                  </div>
+    
+                  <div>
+                      <label for="car"><b> Select your car (model-make-year):</b></label>
+                      <select name="car" id="car" class="form-select" required>
+                        {% for car in cars %}
+                        {% if car.dealer_id == dealer.id %}
+                            <option selected value={{car.id}}>{{car.name}} {{car.make.name}} - {{ car.year|date:"Y" }}</option>
+                        {% endif %}
+                        {% endfor %}
+                       </select>
+                  </div>    
+                  <div>
+                      <label for="purchasedate">Select Your Purchase Date:</label>
+                      <input class="date-own form-control" type="text" name="purchasedate" id="purchasedate">
+                  </div>
+    
+            </div>
+           
+            <div>
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </div>     
+            {% csrf_token %}     
+    </form>
+   
+    </body>
+    
+    <script type="text/javascript">
+          $('.date-own').datepicker({
+             format: 'mm/dd/yyyy'
+           });
+     </script>
     </body>
 </html>

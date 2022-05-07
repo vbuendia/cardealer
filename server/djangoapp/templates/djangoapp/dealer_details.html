@@ -7,16 +7,23 @@
     {% include 'djangoapp/bar_nav.html' %}
 
     {% if user.is_authenticated %}
-      -> add_review en nav_bar
+    <a class="btn btn-link" href="{% url 'djangoapp:add_review' dealer.id %}">Add review</a>
     {% endif%}  
 
 
-    Reviews for {{ dealer.full_name }}
+    <h3> Reviews for {{ dealer.full_name }} </h3>
     <!-- Add reviews as cards -->
     <div class="card-columns">
         {% for revi in reviews %}
-        <div class="card"> -
-        {{ revi }}
+        <div class="card">
+            <img class="card-img-left" width=25 src="{{MEDIA_URL}}/emoji/{{revi.sentiment}}.png">
+            <div class="card-body">
+               <h5 class="card-title">{{revi.car_make}}, {{revi.car_model}} </h5>               
+               <p class="card-title"> {{ revi.car_year }}</p>
+               <p class="card-title"> {{ revi.review }}</p>               
+            </div>
+
+        
         </div>
         {% endfor%}
     </div>
